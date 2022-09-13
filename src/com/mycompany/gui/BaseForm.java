@@ -31,7 +31,11 @@ import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.LayeredLayout;
 import com.codename1.ui.layouts.Layout;
 import com.codename1.ui.plaf.Style;
+import com.codename1.ui.plaf.UIManager;
 import com.codename1.ui.util.Resources;
+import com.mycompany.myapp.entities.Panier;
+import com.mycompany.myapp.entities.services.ServicePanier;
+import java.util.ArrayList;
 
 /**
  * Base class for the forms with common functionality
@@ -66,8 +70,20 @@ public class BaseForm extends Form {
         return separator;
     }
 
-    protected void addSideMenu(Resources res) {
+        protected void addSideMenu(Resources res) {
         Toolbar tb = getToolbar();
+        Style s = UIManager.getInstance().getComponentStyle("TitleCommand");
+        FontImage icon = FontImage.createMaterial(FontImage.MATERIAL_SHOPPING_BAG, s);
+            ServicePanier sp = new ServicePanier();
+            ArrayList <Panier> paniers = new ArrayList();
+
+            paniers= sp.getAllPanier();
+            int total=0;
+            for (Panier fi : paniers) {
+            total=total+1;
+            }
+
+        tb.addCommandToRightBar(String.valueOf(total), icon, e -> new MonPanier(res).show());
         Image img = res.getImage("profile-background.jpg");
         if(img.getHeight() > Display.getInstance().getDisplayHeight() / 3) {
             img = img.scaledHeight(Display.getInstance().getDisplayHeight() / 3);
@@ -84,6 +100,8 @@ public class BaseForm extends Form {
         
         tb.addMaterialCommandToSideMenu("Newsfeed", FontImage.MATERIAL_UPDATE, e -> new NewsfeedForm(res).show());
         tb.addMaterialCommandToSideMenu("Profile", FontImage.MATERIAL_SETTINGS, e -> new ProfileForm(res).show());
+        tb.addMaterialCommandToSideMenu("Stat", FontImage.MATERIAL_SETTINGS, e -> new StatPanier(res).show());
+        tb.addMaterialCommandToSideMenu("Panier", FontImage.MATERIAL_SHOPPING_CART, e -> new ProfileForm(res).show());
         tb.addMaterialCommandToSideMenu("Logout", FontImage.MATERIAL_EXIT_TO_APP, e -> new WalkthruForm(res).show());
     }
 }
